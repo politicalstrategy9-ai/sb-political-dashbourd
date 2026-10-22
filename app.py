@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 
 # ==========================================
-# ১. পেজ কনফিগারেশন ও রেসপন্সিভ স্টাইলিং (Mobile Friendly)
+# 1. Page Configuration & Responsive Styling
 # ==========================================
 st.set_page_config(
     page_title="SB Political Consulting",
@@ -12,16 +12,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# অ্যান্টিক ফিল ও মোবাইল ফ্রেন্ডলি CSS স্টাইলিং
+# Antique Feel & Mobile Friendly Styling
 st.markdown("""
     <style>
-    /* ব্যাকগ্রাউন্ড ও টেক্সট কালার */
     .stApp {
         background-color: #FAF6EE;
         color: #1A2B4C;
     }
-    
-    /* হেডারের জন্য কাস্টম স্টাইল */
     .header-container {
         background: linear-gradient(135deg, #0D233A 0%, #1A365D 100%);
         color: white;
@@ -31,8 +28,6 @@ st.markdown("""
         margin-bottom: 25px;
         border-bottom: 4px solid #D97706;
     }
-    
-    /* বাটন স্টাইলিং (মোবাইলে বড় টাচ টার্গেট) */
     .stButton>button {
         background-color: #0D233A;
         color: #FFFFFF;
@@ -47,26 +42,11 @@ st.markdown("""
         background-color: #D97706;
         color: white;
     }
-    
-    /* ইনপুট বক্স ও ইনপুট কার্ড */
-    .css-1r6594q, .stSelectbox, .stTextInput {
-        border-radius: 8px;
-    }
-    
-    /* হাইড পাসওয়ার্ড ও এজেন্ট ভিউ কার্ড */
-    .agent-card {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 15px;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# ২. ডেটাবেস/সেশন স্টেট ইনিশিয়ালাইজেশন
+# 2. State Initialization
 # ==========================================
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -75,7 +55,6 @@ if 'user_role' not in st.session_state:
 if 'username' not in st.session_state:
     st.session_state.username = ""
 
-# স্যাম্পল কোশ্চেন ব্যাংক
 if 'questions' not in st.session_state:
     st.session_state.questions = [
         {
@@ -94,7 +73,6 @@ if 'questions' not in st.session_state:
         }
     ]
 
-# স্যাম্পল এজেন্ট লিস্ট
 if 'agents' not in st.session_state:
     st.session_state.agents = [
         {"id": "agent01", "name": "Rahul Das", "pass": "1234"},
@@ -102,7 +80,7 @@ if 'agents' not in st.session_state:
     ]
 
 # ==========================================
-# ৩. হেডার ডিজাইন
+# 3. Header Design
 # ==========================================
 st.markdown("""
     <div class="header-container">
@@ -112,7 +90,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# ৪. লগইন পেজ (Admin & Agent)
+# 4. Login Portal
 # ==========================================
 if not st.session_state.logged_in:
     st.subheader("🔑 Login Portal")
@@ -121,17 +99,15 @@ if not st.session_state.logged_in:
     
     with col1:
         input_user = st.text_input("Username / Agent ID")
-        input_pass = st.text_input("Password", type="password") # পাসওয়ার্ড হাইড থাকবে
+        input_pass = st.text_input("Password", type="password")
         
         if st.button("LOGIN"):
-            # এডমিন লগইন চেক
             if input_user == "skbabul" and input_pass == "Babul123":
                 st.session_state.logged_in = True
                 st.session_state.user_role = "admin"
                 st.session_state.username = "skbabul"
                 st.rerun()
             else:
-                # এজেন্ট লগইন চেক
                 found_agent = False
                 for ag in st.session_state.agents:
                     if ag["id"] == input_user and ag["pass"] == input_pass:
@@ -142,14 +118,12 @@ if not st.session_state.logged_in:
                         st.rerun()
                 
                 if not found_agent:
-                    st.error("ভুল ইউজারনেম বা পাসওয়ার্ড দিয়েছেন!")
+                    st.error("Bhul username ba password diyechen!")
 
 # ==========================================
-# ৫. এজেন্ট ভিউ (শুধু মোবাইল সার্ভে ফর্ম)
+# 5. Agent View (Mobile Survey Form)
 # ==========================================
 elif st.session_state.logged_in and st.session_state.user_role == "agent":
-    
-    # টপ বার
     c1, c2 = st.columns([3, 1])
     with c1:
         st.write(f"👤 Agent: **{st.session_state.username}**")
@@ -159,9 +133,7 @@ elif st.session_state.logged_in and st.session_state.user_role == "agent":
             st.rerun()
             
     st.divider()
-    
-    # ভাষা নির্বাচন
-    lang = st.radio("🌐 Select Survey Language / ভাষা নির্বাচন করুন:", ["Bengali (বাংলা)", "Hindi (हिंदी)", "English"], horizontal=True)
+    lang = st.radio("🌐 Select Survey Language:", ["Bengali (বাংলা)", "Hindi (हिंदी)", "English"], horizontal=True)
     
     lang_key = "bn"
     if "Hindi" in lang:
@@ -172,7 +144,6 @@ elif st.session_state.logged_in and st.session_state.user_role == "agent":
     st.write("---")
     st.subheader("📋 Field Survey Questions")
     
-    # ফর্ম
     with st.form("survey_form"):
         responses = {}
         for idx, q in enumerate(st.session_state.questions):
@@ -182,23 +153,17 @@ elif st.session_state.logged_in and st.session_state.user_role == "agent":
         
         st.write("---")
         st.write("🎙️ **Audio Recording & Location:**")
-        
-        # অডিও ইনপুট (মোবাইলে মাইক্রোফোন খুলবে)
         audio_val = st.audio_input("Record Audio Response (Optional)")
-        
-        # জিপিএস লোকেশন সিমুলেশন বা ম্যানুয়াল ইনপুট
         loc_confirm = st.checkbox("📍 Attach GPS Location Details", value=True)
         
         submitted = st.form_submit_button("SUBMIT SURVEY")
         if submitted:
-            st.success("✅ Survey submitted successfully! Data sent to admin.")
+            st.success("✅ Survey submitted successfully!")
 
 # ==========================================
-# ৬. এডমিন ভিউ (FULL DASHBOARD)
+# 6. Admin View
 # ==========================================
 elif st.session_state.logged_in and st.session_state.user_role == "admin":
-    
-    # সাইডবার কন্ট্রোল
     st.sidebar.title("ADMIN PANEL")
     st.sidebar.write(f"Logged as: **{st.session_state.username}**")
     
@@ -213,10 +178,8 @@ elif st.session_state.logged_in and st.session_state.user_role == "admin":
         st.session_state.logged_in = False
         st.rerun()
 
-    # --- ১. ড্যাশবোর্ড ওভারভিউ ---
     if menu == "📊 Dashboard Overview":
         st.header("Overview & Real-time Analytics")
-        
         kpi1, kpi2, kpi3 = st.columns(3)
         kpi1.metric("Total Surveys", "1,248", "+12%")
         kpi2.metric("Active Agents", len(st.session_state.agents), "Live")
@@ -229,14 +192,11 @@ elif st.session_state.logged_in and st.session_state.user_role == "admin":
         })
         st.map(df_dummy)
 
-    # --- ২. কোশ্চেন ম্যানেজমেন্ট ---
     elif menu == "❓ Question Management":
         st.header("Question Bank (Unlimited)")
-        
-        # নতুন প্রশ্ন যোগ
         with st.expander("➕ Add New Survey Question", expanded=False):
-            q_bn = st.text_input("Question in Bengali (বাংলা)")
-            q_hi = st.text_input("Question in Hindi (हिंदी)")
+            q_bn = st.text_input("Question in Bengali")
+            q_hi = st.text_input("Question in Hindi")
             q_en = st.text_input("Question in English")
             opts = st.text_area("Options (Comma Separated)", "Option 1, Option 2, Option 3")
             
@@ -253,7 +213,6 @@ elif st.session_state.logged_in and st.session_state.user_role == "admin":
                     st.success("Question Added Successfully!")
                     st.rerun()
 
-        # বিদ্যমান প্রশ্নের তালিকা
         st.subheader("Existing Questions List")
         for i, q in enumerate(st.session_state.questions):
             col_a, col_b = st.columns([5, 1])
@@ -265,16 +224,13 @@ elif st.session_state.logged_in and st.session_state.user_role == "admin":
                     st.session_state.questions.pop(i)
                     st.rerun()
 
-    # --- ৩. এজেন্ট ম্যানেজমেন্ট ---
     elif menu == "👥 Agent Management":
         st.header("Field Agent Accounts")
-        
-        # নতুন এজেন্ট যোগ
         with st.form("add_agent_form"):
             st.subheader("Create New Agent")
             ag_id = st.text_input("Agent ID (e.g. agent03)")
             ag_name = st.text_input("Agent Name")
-            ag_pass = st.text_input("Password", type="password") # সিকিউর হাইড পাসওয়ার্ড
+            ag_pass = st.text_input("Password", type="password")
             
             if st.form_submit_button("Create Agent Account"):
                 if ag_id and ag_pass:
@@ -291,13 +247,8 @@ elif st.session_state.logged_in and st.session_state.user_role == "admin":
                 st.session_state.agents.pop(i)
                 st.rerun()
 
-    # --- ৪. রিপোর্ট ও অডিও ---
     elif menu == "🎙️ Field Reports & Audios":
         st.header("Recorded Audio & Location Logs")
-        st.info("Here admin can review audio recordings uploaded by agents along with GPS location timestamps.")
-        
-        # টেবিল ফরম্যাট
-        st.write("Recent Submissions:")
         sample_data = pd.DataFrame([
             {"Agent": "Rahul Das", "Time": "10:15 AM", "Location": "Balagarh, Hooghly", "Audio": "Recorded (0:15s)"},
             {"Agent": "Amit Sharma", "Time": "11:02 AM", "Location": "Dadar, Mumbai", "Audio": "Recorded (0:22s)"}
